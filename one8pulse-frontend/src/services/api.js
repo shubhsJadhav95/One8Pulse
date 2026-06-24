@@ -13,25 +13,25 @@ api.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Get user (tokenData) from localStorage and parse it
-    const user = localStorage.getItem('user');
-    if (user) {
-        try {
-            const userObj = JSON.parse(user);
-            if (userObj.sub) {
-                // Attach the "sub" value as a custom header, e.g., "X-User-Sub"
-                config.headers['X-User-ID'] = userObj.sub;
-            }
-        } catch (error) {
-            console.error("Error parsing user from localStorage:", error);
-        }
+    // Get userId from localStorage
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+        config.headers['X-User-ID'] = userId;
     }
     return config;
 });
 
-export const login = (credentials) => api.post('/auth/login', credentials);
-export const register = (userData) => api.post('/auth/register', userData);
+// Auth endpoints
+export const login = (credentials) => api.post('/users/login', credentials);
+export const register = (userData) => api.post('/users/register', userData);
+export const getUserProfile = () => api.get('/users/profile');
+
+// Activity endpoints
 export const getActivities = () => api.get('/activities');
 export const addActivity = (activity) => api.post('/activities', activity);
-export const getActivityDetail = (id) => api.get(`/recommendations/activity/${id}`);
-// export const getActivityDetail = (id) => api.get(`/activities/${id}`);
+export const getActivityDetail = (id) => api.get(`/activities/${id}`);
+
+// AI Recommendations endpoints
+export const getActivityRecommendation = (activityId) =>
+    api.get(`/recommendations/activity/${activityId}`);
+export const getUserRecommendations = () => api.get('/recommendations/user');

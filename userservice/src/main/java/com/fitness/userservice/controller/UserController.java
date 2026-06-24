@@ -1,34 +1,77 @@
 package com.fitness.userservice.controller;
 
-import com.fitness.userservice.dto.RegisterRequest;
-import com.fitness.userservice.dto.UserResponse;
-import com.fitness.userservice.service.UserService;
+import com.fitness.userservice.dto.ErrorResponseDto;
+import com.fitness.userservice.dto.RegisterRequestDTO;
+import com.fitness.userservice.dto.RegisterResponseDTO;
+import com.fitness.userservice.service.IAccountService;
+import com.fitness.userservice.service.impl.EmailServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+
+
+@Slf4j
 @RequestMapping("/api/users")
-@AllArgsConstructor
+@Validated
+@RequiredArgsConstructor
+@RestController
 public class UserController {
 
-    private UserService userService;
+    @Autowired
+    private IAccountService iAccountService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUserProfile(@PathVariable String userId){
-        return ResponseEntity.ok(userService.getUserProfile(userId));
+    @Autowired
+    private EmailServiceImpl emailService;
+
+    @Operation(
+            summary = "Create Account REST API",
+            description = "REST API to create new Customer &  Account inside NeoCare"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "HTTP Status CREATED"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
     }
-
+    )
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request){
-        return ResponseEntity.ok(userService.register(request));
+    public ResponseEntity<RegisterResponseDTO> createProfile(
+            @Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
+
+        RegisterResponseDTO response = iAccountService.createAccount(registerRequestDTO);
+        emailService.sendWelcomeEmail(response.getEmail(),response.getName());
+
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+
+    }
+
+    @GetMapping("/profile")
+    public RegisterResponseDTO getProfile(@CurrentSecurityContext(expression = "authentication?.name")String email){
+
+        return iAccountService.getProfile(email);
     }
 
 
-    @GetMapping("/{userId}/validate")
-    public ResponseEntity<Boolean> validateUser(@PathVariable String userId){
-        return ResponseEntity.ok(userService.existByUserId(userId));
-    }
 }

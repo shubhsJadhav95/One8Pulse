@@ -29,14 +29,14 @@ public class UserService {
                 });
     }
 
-    public Mono<UserResponse> registerUser(RegisterRequest request) {
+    public Mono<RegisterResponseDTO> registerUser(RegisterRequestDTO request) {
         try {
             log.info("Registering new user with email: {}", request.getEmail());
             return userServiceWebClient.post()
                     .uri("/api/users/register")
                     .bodyValue(request)
                     .retrieve()
-                    .bodyToMono(UserResponse.class)
+                    .bodyToMono(RegisterResponseDTO.class)
                     .onErrorResume(WebClientResponseException.class, e -> {
                         if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
                             return Mono.error(new RuntimeException("Bad Request: " + e.getMessage()));

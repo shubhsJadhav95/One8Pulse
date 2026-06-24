@@ -1,92 +1,44 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from 'react-oauth2-code-pkce';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from './store/authSlice';
-import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Box, CssBaseline, Button, CircularProgress } from '@mui/material';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { CssBaseline, Box } from '@mui/material';
+import { useSelector } from 'react-redux';
 import Navbar from './components/layout/Navbar';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import Dashboard from './components/dashboard/Dashboard';
 import ActivityForm from './components/activities/ActivityForm';
 import ActivityList from './components/activities/ActivityList';
 import ActivityDetail from './components/activities/ActivityDetail';
+import Profile from './components/profile/Profile';
 
-// PrivateRoute that avoids redirecting when OAuth callback is in progress
+// PrivateRoute component
 function PrivateRoute({ children }) {
-  const { token } = useContext(AuthContext);
-  const location = useLocation();
-
-  // Prevent redirecting if the OAuth callback (code param) is in progress
-  if (location.search.includes('code=')) {
-    return <CircularProgress />; // Show a loading spinner instead
-  }
-
-  return token ? children : <Navigate to="/" replace />;
+  const token = useSelector(state => state.auth.token);
+  return token ? children : <Navigate to="/login" replace />;
 }
 
-const ActivitiesPage = () => (
-  <Box sx={{ p: 3 }}>
-    <ActivityForm onActivityAdded={() => window.location.reload()} />
-    <ActivityList />
-  </Box>
-);
-
 function App() {
-  const { token, tokenData, login, logOut, isAuthenticated } = useContext(AuthContext);
-  const dispatch = useDispatch();
-  const [authReady, setAuthReady] = useState(false);
-
-  // Ensure token is set before rendering UI
-  useEffect(() => {
-    if (token) {
-      console.log("Token available, updating Redux...", token);
-      dispatch(setCredentials({ token, user: tokenData }));
-      setAuthReady(true);
-    } else {
-      setAuthReady(true); // Mark auth as ready even if no token
-    }
-  }, [token, tokenData, dispatch]);
-
-  // Prevent UI from rendering until auth is initialized
-  if (!authReady) {
-    return <CircularProgress sx={{ display: "block", margin: "auto", mt: 5 }} />;
-  }
-
   return (
     <Router>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
-
-        {/* Login/Logout Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
-          {!token ? (
-            <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={() => {
-              console.log("Login button clicked, calling login()");
-              login();
-            }}
-          >
-            Login
-          </Button>
-          
-          ) : (
-            <Button variant="contained" color="secondary" onClick={logOut}>
-              Logout
-            </Button>
-          )}
-        </Box>
-
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        
+        <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
-            <Route path="/activities" element={<PrivateRoute><ActivitiesPage /></PrivateRoute>} />
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            
+            {/* Private routes */}
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/activities" element={<PrivateRoute><ActivityList /></PrivateRoute>} />
+            <Route path="/activities/new" element={<PrivateRoute><ActivityForm /></PrivateRoute>} />
             <Route path="/activities/:id" element={<PrivateRoute><ActivityDetail /></PrivateRoute>} />
-
-            {/* Handle Home Route */}
-            <Route 
-              path="/" 
-              element={token ? <Navigate to="/activities" replace /> : <div>Welcome! Please log in.</div>} 
-            />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+            
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Box>
       </Box>
