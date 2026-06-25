@@ -25,6 +25,8 @@ api.interceptors.request.use((config) => {
 export const login = (credentials) => api.post('/users/login', credentials);
 export const register = (userData) => api.post('/users/register', userData);
 export const getUserProfile = () => api.get('/users/profile');
+export const forgotPassword = (email) => api.post('/users/forgot-password', { email });
+export const resetPassword = (token, password) => api.post('/users/reset-password', { token, password });
 
 // Activity endpoints
 export const getActivities = () => api.get('/activities');
