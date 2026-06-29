@@ -2,13 +2,15 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Paper, Alert, InputAdornment, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock, Visibility, VisibilityOff, CheckCircle } from '@mui/icons-material';
 import { resetPassword } from '../../services/api';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const { token } = useParams();
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.email || '');
+  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +27,11 @@ const ResetPassword = () => {
     e.preventDefault();
     setError('');
 
+    if (!email || !otp) {
+      setError('Please provide email and OTP.');
+      return;
+    }
+
     if (!validatePassword(password)) {
       setError('Password must be at least 8 characters long.');
       return;
@@ -38,10 +45,10 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      await resetPassword(token, password);
+      await resetPassword(otp, email, password);
       setSuccess(true);
     } catch (err) {
-      setError('Failed to reset password. The link may be expired or invalid.');
+      setError('Failed to reset password. Please check your OTP and try again.');
     } finally {
       setLoading(false);
     }
@@ -160,7 +167,7 @@ const ResetPassword = () => {
               Reset Password
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-              Enter your new password below.
+              Enter your email, OTP, and new password below.
             </Typography>
           </Box>
 
@@ -170,6 +177,27 @@ const ResetPassword = () => {
                 {error}
               </Alert>
             )}
+
+            <TextField
+              fullWidth
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              sx={{ mb: 2 }}
+            />
+
+            <TextField
+              fullWidth
+              label="OTP"
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+              sx={{ mb: 2 }}
+              helperText="Enter the OTP sent to your email"
+            />
 
             <TextField
               fullWidth

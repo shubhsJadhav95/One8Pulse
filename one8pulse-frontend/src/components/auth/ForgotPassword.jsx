@@ -22,7 +22,7 @@ const ForgotPassword = () => {
       await forgotPassword(email);
       setSuccess(true);
     } catch (err) {
-      setError('Failed to send reset email. Please try again.');
+      setError('Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -82,14 +82,31 @@ const ForgotPassword = () => {
               Forgot Password?
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-              Enter your email address and we'll send you a link to reset your password.
+              Enter your email address and we'll send you an OTP to reset your password.
             </Typography>
           </Box>
 
           {success ? (
-            <Alert severity="success" sx={{ mb: 3 }}>
-              Password reset email sent! Check your inbox for further instructions.
-            </Alert>
+            <>
+              <Alert severity="success" sx={{ mb: 3 }}>
+                OTP sent successfully! Check your email for the OTP code.
+              </Alert>
+              <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                onClick={() => navigate('/reset-password', { state: { email } })}
+                sx={{
+                  py: 1.5,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  background: 'linear-gradient(135deg, #2563EB 0%, #10B981 100%)',
+                }}
+              >
+                Continue to Reset Password
+              </Button>
+            </>
           ) : (
             <form onSubmit={handleSubmit}>
               {error && (

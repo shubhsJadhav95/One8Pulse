@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/fitness_user_db
+    url: ${DB_URL}
     username: postgres
-    password: 952004
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -29,11 +29,6 @@ spring:
           starttls:
             enable: true
           from: xespilon@gmail.com
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
 
 jwt:
   secret:

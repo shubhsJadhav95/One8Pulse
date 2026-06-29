@@ -36,6 +36,11 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         // PUBLIC ROUTES
         if (path.startsWith("/api/users/login") ||
                 path.startsWith("/api/users/register") ||
+                path.startsWith("/api/users/send-reset-otp") ||
+                path.startsWith("/api/users/reset-password") ||
+                path.startsWith("/api/sos/trigger") ||
+                path.startsWith("/api/sos/nearby-hospitals") ||
+                path.startsWith("/api/sos/emergency-contact") ||
                 path.startsWith("/actuator")) {
             return chain.filter(exchange);
         }

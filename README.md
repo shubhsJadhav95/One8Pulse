@@ -37,6 +37,7 @@ A modern, high-end fitness tracking application built with microservices archite
 - Java 17 or higher
 - Node.js 18 or higher
 - MongoDB (local or cloud instance)
+- RabbitMQ (optional, for message queuing)
 - Maven
 
 ### Backend Setup
@@ -55,42 +56,55 @@ mongod
 # Or use the cloud MongoDB connection string in config files
 ```
 
-3. **Start Eureka Server**
+3. **Start RabbitMQ** (Optional - for message queuing between services)
+```bash
+# Using Docker
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+# Or install RabbitMQ locally
+# Download from https://www.rabbitmq.com/download.html
+# Start the RabbitMQ service
+# Management UI: http://localhost:15672 (default: guest/guest)
+```
+
+**Note**: RabbitMQ is optional. The AI Service can run without it by setting `rabbitmq.enabled=false` in configuration.
+
+4. **Start Eureka Server**
 ```bash
 cd eureka
 mvn spring-boot:run
 ```
 - Access at: http://localhost:8761
 
-4. **Start Config Server**
+5. **Start Config Server**
 ```bash
 cd configserver
 mvn spring-boot:run
 ```
 - Access at: http://localhost:8888
 
-5. **Start User Service**
+6. **Start User Service**
 ```bash
 cd userservice
 mvn spring-boot:run
 ```
 - Access at: http://localhost:8081
 
-6. **Start Activity Service**
+7. **Start Activity Service**
 ```bash
 cd activityservice
 mvn spring-boot:run
 ```
 - Access at: http://localhost:8082
 
-7. **Start AI Service** (Optional)
+8. **Start AI Service** (Optional)
 ```bash
 cd aiservice
 mvn spring-boot:run
 ```
 - Access at: http://localhost:8083
 
-8. **Start API Gateway**
+9. **Start API Gateway**
 ```bash
 cd gateway
 mvn spring-boot:run
@@ -124,6 +138,11 @@ npm run dev
 - **MongoDB URI**: Connection string for MongoDB
 - **Gemini API Key**: For AI recommendations (AI Service)
 - **RabbitMQ Configuration**: Optional message queue setup
+  - `rabbitmq.enabled`: Enable/disable RabbitMQ (default: false)
+  - `spring.rabbitmq.host`: RabbitMQ host (default: localhost)
+  - `spring.rabbitmq.port`: RabbitMQ port (default: 5672)
+  - `spring.rabbitmq.username`: RabbitMQ username (default: guest)
+  - `spring.rabbitmq.password`: RabbitMQ password (default: guest)
 
 #### Frontend
 - **API Base URL**: http://localhost:8080 (Gateway URL)
@@ -133,13 +152,54 @@ npm run dev
 - Backend configs are in `configserver/src/main/resources/config/`
 - Service-specific configs: `user-service.yml`, `activity-service.yml`, `api-gateway.yml`, `ai-service.yml`
 
+### Frontend Structure
+```
+one8pulse-frontend/
+├── src/
+│   ├── components/
+│   │   ├── auth/
+│   │   │   ├── Login.jsx          # Login page with forgot password link
+│   │   │   ├── Register.jsx       # Registration with password strength
+│   │   │   ├── ForgotPassword.jsx # Forgot password page
+│   │   │   └── ResetPassword.jsx  # Reset password with token
+│   │   ├── activities/
+│   │   │   ├── ActivityList.jsx   # Activity listing page
+│   │   │   ├── ActivityForm.jsx   # Create new activity
+│   │   │   └── ActivityDetail.jsx # Activity details with AI recommendations
+│   │   ├── dashboard/
+│   │   │   └── Dashboard.jsx      # Main dashboard
+│   │   ├── profile/
+│   │   │   └── Profile.jsx       # User profile management
+│   │   ├── layout/
+│   │   │   └── Navbar.jsx        # Navigation with theme toggle
+│   │   └── onboarding/
+│   │       ├── SplashScreen.jsx  # Animated splash screen
+│   │       └── Onboarding.jsx    # Onboarding flow
+│   ├── context/
+│   │   └── ThemeContext.jsx      # Theme management context
+│   ├── services/
+│   │   ├── api.js                # API service calls
+│   │   └── authService.js        # Authentication service
+│   ├── store/
+│   │   ├── authSlice.js          # Redux auth state
+│   │   └── store.js              # Redux store configuration
+│   ├── theme/
+│   │   └── theme.js              # Material-UI theme configuration
+│   ├── App.jsx                   # Main app with routing
+│   └── main.jsx                  # App entry point
+```
+
 ## ✨ Key Features
 
 ### User Features
 - **User Registration & Authentication**
   - Email/password registration
   - JWT-based authentication
-  - Password reset functionality
+  - **Password Reset Functionality**
+    - Forgot password flow with email verification
+    - Secure token-based password reset
+    - Reset password page with token validation
+    - Frontend routes: `/forgot-password` and `/reset-password/:token`
   - Secure session management
 
 - **Activity Tracking**
@@ -164,6 +224,12 @@ npm run dev
   - Glassmorphism effects
   - Soft gradients and animations
   - Rounded corners and spacious layouts
+
+- **Authentication Pages**
+  - Login page with forgot password link
+  - Registration page with password strength indicator
+  - **Forgot Password page** - Email submission for password reset
+  - **Reset Password page** - Secure password reset with token validation
 
 - **Dark/Light Mode**
   - Toggle between themes

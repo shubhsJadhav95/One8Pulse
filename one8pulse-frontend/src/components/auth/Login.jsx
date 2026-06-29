@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { authService } from '../../services/authService';
 import { setCredentials } from '../../store/authSlice';
 import styles from '../../styles/Login.module.css';
-import { useTheme as useCustomTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 
 // ── Simple SVG icons (no extra deps) ─────────────────────────
 const IconEmail = () => (
@@ -61,7 +61,7 @@ const Login = () => {
   const btnRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { mode } = useCustomTheme();
+  const { mode } = useTheme();
 
   // Ripple click effect on submit button
   const handleRipple = (e) => {

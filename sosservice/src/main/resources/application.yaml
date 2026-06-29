@@ -1,0 +1,36 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: sosservice
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fitness_sos_db
+    username: postgres
+    password: 
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+    devtools:
+      restart:
+        enabled: false
+
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: afb403001@smtp-brevo.com
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+google:
+  places:
+    api-key:

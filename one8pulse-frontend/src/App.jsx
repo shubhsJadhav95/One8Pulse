@@ -14,6 +14,7 @@ import ActivityForm from './components/activities/ActivityForm';
 import ActivityList from './components/activities/ActivityList';
 import ActivityDetail from './components/activities/ActivityDetail';
 import Profile from './components/profile/Profile';
+import SOS from './components/sos/SOS';
 
 // PrivateRoute component
 function PrivateRoute({ children }) {
@@ -40,7 +41,7 @@ function App() {
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
           <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-          <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+          <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
           
           {/* Private routes with navbar */}
           <Route
@@ -55,6 +56,7 @@ function App() {
                     <Route path="/activities/new" element={<PrivateRoute><ActivityForm /></PrivateRoute>} />
                     <Route path="/activities/:id" element={<PrivateRoute><ActivityDetail /></PrivateRoute>} />
                     <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                    <Route path="/sos" element={<PrivateRoute><SOS /></PrivateRoute>} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </Box>

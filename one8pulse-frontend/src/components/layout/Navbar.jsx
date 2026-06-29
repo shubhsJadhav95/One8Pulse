@@ -1,22 +1,21 @@
-// src/components/layout/Navbar.jsx
+// src/components/common/Navbar.jsx
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { logout } from '../../store/authSlice';
 import { authService } from '../../services/authService';
-import { useTheme as useCustomTheme } from '../../context/ThemeContext';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import EmergencyIcon from '@mui/icons-material/Emergency';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 import styles from '../../styles/dashboard/navbar.module.css';
 
 const NAV_LINKS = [
   { label: 'Dashboard', path: '/dashboard', icon: <DashboardOutlinedIcon sx={{ fontSize: 17 }} /> },
   { label: 'Activities', path: '/activities', icon: <DirectionsRunIcon sx={{ fontSize: 17 }} /> },
+  { label: 'SOS',        path: '/sos',        icon: <EmergencyIcon sx={{ fontSize: 17 }} /> },
   { label: 'Profile',    path: '/profile',    icon: <PersonOutlineIcon sx={{ fontSize: 17 }} /> },
 ];
 
@@ -24,9 +23,11 @@ const NavLink = ({ to, icon, label, active }) => (
   <Link
     to={to}
     className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+    aria-label={label}
+    title={label}
   >
     {icon}
-    {label}
+    <span className={styles.navLabel}>{label}</span>
   </Link>
 );
 
@@ -35,7 +36,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = useSelector(state => state.auth.token);
-  const { mode, toggleTheme } = useCustomTheme();
   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
   useEffect(() => { setIsAuthenticated(!!token); }, [token]);
@@ -70,13 +70,9 @@ const Navbar = () => {
 
             <div className={styles.divider} />
 
-            <button onClick={toggleTheme} className={styles.themeButton}>
-              {mode === 'dark' ? <Brightness7Icon sx={{ fontSize: 15 }} /> : <Brightness4Icon sx={{ fontSize: 15 }} />}
-            </button>
-
-            <button onClick={handleLogout} className={styles.logoutButton}>
+            <button onClick={handleLogout} className={styles.logoutButton} aria-label="Logout" title="Logout">
               <LogoutIcon sx={{ fontSize: 15 }} />
-              Logout
+              <span className={styles.navLabel}>Logout</span>
             </button>
           </>
         ) : (

@@ -92,21 +92,32 @@ const theme = createTheme({
     borderRadius: 12,
   },
   shadows: [
-    {
-      shadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-    },
-    {
-      shadow: '0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12)',
-    },
-    {
-      shadow: '0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10)',
-    },
-    {
-      shadow: '0 15px 25px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.05)',
-    },
-    {
-      shadow: '0 20px 40px rgba(0,0,0,0.2)',
-    },
+    'none',
+    '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+    '0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12)',
+    '0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10)',
+    '0 15px 25px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.05)',
+    '0 20px 40px rgba(0,0,0,0.2)',
+    '0 25px 50px rgba(0,0,0,0.21)',
+    '0 30px 60px rgba(0,0,0,0.22)',
+    '0 35px 70px rgba(0,0,0,0.23)',
+    '0 40px 80px rgba(0,0,0,0.24)',
+    '0 45px 90px rgba(0,0,0,0.25)',
+    '0 50px 100px rgba(0,0,0,0.26)',
+    '0 55px 110px rgba(0,0,0,0.27)',
+    '0 60px 120px rgba(0,0,0,0.28)',
+    '0 65px 130px rgba(0,0,0,0.29)',
+    '0 70px 140px rgba(0,0,0,0.30)',
+    '0 75px 150px rgba(0,0,0,0.31)',
+    '0 80px 160px rgba(0,0,0,0.32)',
+    '0 85px 170px rgba(0,0,0,0.33)',
+    '0 90px 180px rgba(0,0,0,0.34)',
+    '0 95px 190px rgba(0,0,0,0.35)',
+    '0 100px 200px rgba(0,0,0,0.36)',
+    '0 105px 210px rgba(0,0,0,0.37)',
+    '0 110px 220px rgba(0,0,0,0.38)',
+    '0 115px 230px rgba(0,0,0,0.39)',
+    '0 120px 240px rgba(0,0,0,0.40)',
   ],
   components: {
     MuiButton: {

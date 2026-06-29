@@ -9,13 +9,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class UserService {
     private final WebClient userServiceWebClient;
 
     public Mono<Boolean> validateUser(String userId) {
-        log.info("Calling User Validation API for userId: {}", userId);
         return userServiceWebClient.get()
                 .uri("/api/users/{userId}/validate", userId)
                 .retrieve()
@@ -31,7 +29,6 @@ public class UserService {
 
     public Mono<RegisterResponseDTO> registerUser(RegisterRequestDTO request) {
         try {
-            log.info("Registering new user with email: {}", request.getEmail());
             return userServiceWebClient.post()
                     .uri("/api/users/register")
                     .bodyValue(request)

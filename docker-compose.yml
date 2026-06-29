@@ -1,0 +1,244 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: one8pulse-postgres
+    environment:
+      POSTGRES_DB: fitness_user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 952004
+    ports:
+      - "5432:5432"
+    networks:
+      - one8pulse-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: one8pulse-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - one8pulse-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  eureka:                                         # ← fixed indentation
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+    container_name: one8pulse-eureka
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_APPLICATION_NAME: eureka-server
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
+      EUREKA_CLIENT_FETCH_REGISTRY: false
+    networks:
+      - one8pulse-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  configserver:
+    build:
+      context: ./configserver
+      dockerfile: Dockerfile
+    container_name: one8pulse-configserver
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_APPLICATION_NAME: config-server
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/shubhsjadhav95/one8pulse-config
+      SPRING_CLOUD_CONFIG_SERVER_GIT_CLONE_ON_START: true
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka/
+    networks:
+      - one8pulse-network
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: one8pulse-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: api-gateway
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka/
+      JWT_KEY: nM3GZ9YxE0rXv1R8Pp2Z5cQ4A6v0m9FZkZ0YpZyM3vA=
+    networks:
+      - one8pulse-network
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  userservice:
+    build:
+      context: ./userservice
+      dockerfile: Dockerfile
+    container_name: one8pulse-userservice
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: user-service
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/fitness_user_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 952004
+      JWT_SECRET: nM3GZ9YxE0rXv1R8Pp2Z5cQ4A6v0m9FZkZ0YpZyM3vA=
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: ${EMAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${EMAIL_PASSWORD}
+    networks:
+      - one8pulse-network
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy        # ← added
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  activityservice:
+    build:
+      context: ./activityservice
+      dockerfile: Dockerfile
+    container_name: one8pulse-activityservice
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_APPLICATION_NAME: activity-service
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka/
+      SPRING_DATA_MONGODB_URI: ${MONGODB_URI}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      USER_SERVICE_URL: http://userservice:8081
+    networks:
+      - one8pulse-network
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      userservice:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy            # ← added
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  aiservice:
+    build:
+      context: ./aiservice
+      dockerfile: Dockerfile
+    container_name: one8pulse-aiservice
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_APPLICATION_NAME: ai-service
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka/
+      SPRING_DATA_MONGODB_URI: ${MONGODB_URI}
+      gemini.api.url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent
+      gemini.api.key: ${GEMINI_API_KEY}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    networks:
+      - one8pulse-network
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  sosservice:
+    build:
+      context: ./sosservice
+      dockerfile: Dockerfile
+    container_name: one8pulse-sosservice
+    ports:
+      - "8089:8089"
+    environment:
+      SPRING_APPLICATION_NAME: sosservice
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/fitness_user_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 952004
+      SPRING_MAIL_HOST: smtp-relay.brevo.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: afb403001@smtp-brevo.com
+      SPRING_MAIL_PASSWORD: REMOVED
+      google.places.api-key: ${GOOGLE_PLACES_API_KEY}
+    networks:
+      - one8pulse-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8089/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+networks:
+  one8pulse-network:
+    driver: bridge
