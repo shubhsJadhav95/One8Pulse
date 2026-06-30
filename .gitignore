@@ -7,4 +7,4 @@ yarn-error.log*
 package-lock.json
 
 src/main/resources/config/*.yml
-!src/main/resources/config/*.example
+!src/main/resources/config/*.examplereplacements.txt
