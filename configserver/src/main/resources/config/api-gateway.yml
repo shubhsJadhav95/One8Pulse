@@ -33,3 +33,4 @@ jwt:
     key: ${JWT_KEY}
   expiration:
     ms: 86400000
+

@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${DB_URL}
     username: postgres
-    password: ${DB_PASSWORD}
+    password: 952004
 
   jpa:
     hibernate:
@@ -35,3 +35,11 @@ jwt:
     key: ${JWT_KEY}
   expiration:
     ms: 86400000
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health

@@ -10,6 +10,7 @@ spring:
     username: postgres
     password: 
 
+
   jpa:
     hibernate:
       ddl-auto: update
