@@ -20,7 +20,7 @@ spec:
         ports:
         - containerPort: 8888
         envFrom:
-          - secretREf:
+          - secretRef:
               name: backend-secret
         volumeMounts:
             - name: secrets-store
@@ -55,7 +55,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: "neocare-secrets"
+              secretProviderClass: "one8pulse-secrets"
 ---
 apiVersion: v1
 kind: Service
