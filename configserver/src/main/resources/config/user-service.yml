@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL}
+    url: ${DB_HOST}
     username: postgres
-    password: 952004
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:

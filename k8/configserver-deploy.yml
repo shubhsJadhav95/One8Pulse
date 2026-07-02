@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one8pulse-configserver
+  namespace: one8pulse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: one8pulse
+  template:
+    metadata:
+      labels:
+        app: one8pulse
+    spec:
+      containers:
+      - name: one8pulse-configserver
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/configserver:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8888
+        envFrom:
+          - secretREf:
+              name: backend-secret
+        volumeMounts:
+            - name: secrets-store
+              mountPath: "/mnt/secrets"
+              readOnly: true 
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8888
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8888
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "neocare-secrets"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one8pulse-configserver-service
+  namespace: one8pulse
+spec:
+  selector:
+    app: one8pulse
+  ports:
+  - port: 80
+    targetPort: 8888
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: one8pulse-configserver-ingress
+  namespace: one8pulse
+  annotations:
+    alb.ingress.kubernetes.io/group.name: one8pulse-internal-lb
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/e1130d73-0b98-42f6-aaef-ddfea649dee0
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+  - host: configserver.api.devcloudzone.store
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: one8pulse-configserver-service
+            port:
+              number: 80
