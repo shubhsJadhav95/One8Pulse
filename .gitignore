@@ -8,3 +8,16 @@ package-lock.json
 
 src/main/resources/config/*.yml
 !src/main/resources/config/*.examplereplacements.txt
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+override.tf
+override.tf.json
+terraform.tfplan
+crash.log
+crash.*.log
+.terraform.lock.hcl
