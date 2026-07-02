@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one8pulse-frontend
+  namespace: one8pulse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: one8pulse
+  template:
+    metadata:
+      labels:
+        app: one8pulse
+    spec:
+      containers:
+      - name: one8pulse-frontend
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/frontend/one8pulse:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 3
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one8pulse-frontend-service
+  namespace: one8pulse
+spec:
+  selector:
+    app: one8pulse
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: one8pulse-frontend-ingress
+  namespace: one8pulse
+  annotations:
+    alb.ingress.kubernetes.io/group.name: one8pulse-app-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/c4507bca-a2b8-41f7-b149-104db65aecc1
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+  - host: one8pulse.devcloudzone.store
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: one8pulse-frontend-service
+            port:
+              number: 80
