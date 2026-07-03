@@ -115,7 +115,7 @@ metadata:
   namespace: one8pulse
 spec:
   selector:
-    app: one8pulse-configserver
+    app: one8pulse
   ports:
   - port: 80
     targetPort: 8888
