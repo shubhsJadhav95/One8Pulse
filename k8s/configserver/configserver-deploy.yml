@@ -17,7 +17,7 @@ spec:
           - path: "JWT_SECRET"
             objectAlias: "JWT_SECRET"
           - path: "SMTP_PASSWORD"
-            objectAlias: "EMAIL_PASS"
+            objectAlias: "SMTP_PASSWORD"
           - path: "GEMINI_KEY"
             objectAlias: "GEMINI_KEY"
           - path: "MONGO_URL"
