@@ -23,7 +23,7 @@ spec:
           - path: "MONGO_URL"
             objectAlias: "MONGO_URL"
   secretObjects:
-  - secretName: backend-secret
+  - secretName: one8pulse-secrets
     type: Opaque
     data:
     - key: DB_HOST
@@ -65,7 +65,7 @@ spec:
         - containerPort: 8888
         envFrom:
           - secretRef:
-              name: backend-secret
+              name: one8pulse-secrets
         volumeMounts:
           - name: secrets-store
             mountPath: "/mnt/secrets"
