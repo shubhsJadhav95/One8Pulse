@@ -1,3 +1,44 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: one8pulse-secrets
+  namespace: one8pulse
+spec:
+  provider: aws
+  parameters:
+    objects: |
+      - objectName: "stage/one8pulse"
+        objectType: "secretsmanager"
+        jmesPath:
+          - path: "DB_HOST"
+            objectAlias: "DB_HOST"
+          - path: "DB_PASSWORD"
+            objectAlias: "DB_PASSWORD"
+          - path: "JWT_SECRET"
+            objectAlias: "JWT_SECRET"
+          - path: "SMTP_PASSWORD"
+            objectAlias: "EMAIL_PASS"
+          - path: "GEMINI_KEY"
+            objectAlias: "GEMINI_KEY"
+          - path: "MONGO_URL"
+            objectAlias: "MONGO_URL"
+  secretObjects:
+  - secretName: backend-secret
+    type: Opaque
+    data:
+    - key: DB_HOST
+      objectName: DB_HOST
+    - key: DB_PASSWORD
+      objectName: DB_PASSWORD
+    - key: JWT_SECRET
+      objectName: JWT_SECRET
+    - key: SMTP_PASSWORD
+      objectName: SMTP_PASSWORD
+    - key: GEMINI_KEY
+      objectName: GEMINI_KEY
+    - key: MONGO_URL
+      objectName: MONGO_URL
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,6 +53,7 @@ spec:
     metadata:
       labels:
         app: one8pulse
+        component: configserver
     spec:
       containers:
       - name: one8pulse-configserver
@@ -23,19 +65,19 @@ spec:
           - secretRef:
               name: backend-secret
         volumeMounts:
-            - name: secrets-store
-              mountPath: "/mnt/secrets"
-              readOnly: true 
+          - name: secrets-store
+            mountPath: "/mnt/secrets"
+            readOnly: true
         resources:
-            requests:
-              cpu: 200m
-              memory: 384Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi 
+          requests:
+            cpu: 200m
+            memory: 384Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
         readinessProbe:
           httpGet:
-            path: /
+            path: /actuator/health/readiness
             port: 8888
           initialDelaySeconds: 5
           periodSeconds: 10
@@ -43,7 +85,7 @@ spec:
           failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /
+            path: /actuator/health/liveness
             port: 8888
           initialDelaySeconds: 15
           periodSeconds: 20
@@ -64,7 +106,7 @@ metadata:
   namespace: one8pulse
 spec:
   selector:
-    app: one8pulse
+    app: one8pulse-configserver
   ports:
   - port: 80
     targetPort: 8888
@@ -76,17 +118,15 @@ metadata:
   name: one8pulse-configserver-ingress
   namespace: one8pulse
   annotations:
-    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/d83e36ad-c6b5-43da-aefe-844cf88a67de
+    alb.ingress.kubernetes.io/group.name: one8pulse-internal-lb
+    alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
     kubernetes.io/ingress.class: alb
 spec:
   rules:
-  - host: configserver.one8pulse.devcloudzone.store
+  - host: configserver.internal.one8pulse.devcloudzone.store
     http:
       paths:
       - path: /

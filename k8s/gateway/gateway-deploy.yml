@@ -7,18 +7,22 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: one8pulse
+      app: one8pulse-gateway
   template:
     metadata:
       labels:
-        app: one8pulse
+        app: one8pulse-gateway
+        component: gateway
     spec:
       containers:
-      - name: one8pulse-configserver
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:35
+      - name: one8pulse-gateway
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: backend-secret
         resources:
           requests:
             cpu: 200m
@@ -28,7 +32,7 @@ spec:
             memory: 512Mi
         readinessProbe:
           httpGet:
-            path: /
+            path: /actuator/health/readiness
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 10
@@ -36,7 +40,7 @@ spec:
           failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /
+            path: /actuator/health/liveness
             port: 8080
           initialDelaySeconds: 15
           periodSeconds: 20
@@ -50,20 +54,21 @@ metadata:
   namespace: one8pulse
 spec:
   selector:
-    app: one8pulse
+    app: one8pulse-gateway
   ports:
   - port: 80
     targetPort: 8080
   type: ClusterIP
 ---
+# This is the ONLY service that should be internet-facing.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: one8pulse-gateway-ingress
   namespace: one8pulse
   annotations:
-    alb.ingress.kubernetes.io/group.name: one8pulse-internal-lb
-    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/d83e36ad-c6b5-43da-aefe-844cf88a67de
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
@@ -72,13 +77,13 @@ metadata:
     kubernetes.io/ingress.class: alb
 spec:
   rules:
-  - host: gateway.one8pulse.devcloudzone.store
+  - host: api.one8pulse.devcloudzone.store
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: one8pulse-configserver-service
+            name: one8pulse-gateway-service
             port:
               number: 80
