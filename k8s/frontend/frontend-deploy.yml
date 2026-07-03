@@ -62,7 +62,7 @@ metadata:
   name: one8pulse-frontend-ingress
   namespace: one8pulse
   annotations:
-    alb.ingress.kubernetes.io/group.name: one8pulse-app-lb
+    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/c4507bca-a2b8-41f7-b149-104db65aecc1
     alb.ingress.kubernetes.io/target-type: ip
