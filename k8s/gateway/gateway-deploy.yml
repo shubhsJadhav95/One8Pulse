@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: one8pulse-configserver
+  name: one8pulse-gateway
   namespace: one8pulse
 spec:
   replicas: 2
@@ -18,25 +18,18 @@ spec:
         image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/configserver:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8888
-        envFrom:
-          - secretRef:
-              name: backend-secret
-        volumeMounts:
-            - name: secrets-store
-              mountPath: "/mnt/secrets"
-              readOnly: true 
+        - containerPort: 8080
         resources:
-            requests:
-              cpu: 200m
-              memory: 384Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi 
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
         readinessProbe:
           httpGet:
             path: /
-            port: 8888
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 3
@@ -44,36 +37,29 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 8888
+            port: 8080
           initialDelaySeconds: 15
           periodSeconds: 20
           timeoutSeconds: 3
           failureThreshold: 3
-      volumes:
-        - name: secrets-store
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: "one8pulse-secrets"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: one8pulse-configserver-service
+  name: one8pulse-gateway-service
   namespace: one8pulse
 spec:
   selector:
     app: one8pulse
   ports:
   - port: 80
-    targetPort: 8888
+    targetPort: 8080
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: one8pulse-configserver-ingress
+  name: one8pulse-gateway-ingress
   namespace: one8pulse
   annotations:
     alb.ingress.kubernetes.io/group.name: one8pulse-internal-lb
@@ -86,7 +72,7 @@ metadata:
     kubernetes.io/ingress.class: alb
 spec:
   rules:
-  - host: configserver.one8pulse.devcloudzone.store
+  - host: gateway.one8pulse.devcloudzone.store
     http:
       paths:
       - path: /
