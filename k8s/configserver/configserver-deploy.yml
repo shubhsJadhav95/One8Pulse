@@ -55,6 +55,8 @@ spec:
         app: one8pulse
         component: configserver
     spec:
+      serviceAccountName: aws-csi-secret-manager
+      
       containers:
       - name: one8pulse-configserver
         image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/configserver:latest
