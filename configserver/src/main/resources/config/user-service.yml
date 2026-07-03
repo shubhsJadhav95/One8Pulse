@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_HOST}
+    url: jdbc:postgresql://localhost:5432/fitness_user_db
     username: postgres
-    password: ${DB_PASSWORD}
+    password: 952004
 
   jpa:
     hibernate:
