@@ -120,8 +120,8 @@ metadata:
   name: one8pulse-configserver-ingress
   namespace: one8pulse
   annotations:
-    alb.ingress.kubernetes.io/group.name: one8pulse-internal-lb
-    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
