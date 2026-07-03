@@ -7,11 +7,11 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: one8pulse-gateway
+      app: one8pulse
   template:
     metadata:
       labels:
-        app: one8pulse-gateway
+        app: one8pulse
         component: gateway
     spec:
       containers:
@@ -22,7 +22,7 @@ spec:
         - containerPort: 8080
         envFrom:
           - secretRef:
-              name: backend-secret
+              name: one8pulse-secrets
         resources:
           requests:
             cpu: 200m
