@@ -128,7 +128,7 @@ metadata:
     kubernetes.io/ingress.class: alb
 spec:
   rules:
-  - host: configserver.internal.one8pulse.devcloudzone.store
+  - host: configserver.one8pulse.devcloudzone.store
     http:
       paths:
       - path: /
