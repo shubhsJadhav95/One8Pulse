@@ -77,6 +77,29 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8888
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 12   # 10s + (12 * 5s) = 70s max boot allowance
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8888
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8888
+          initialDelaySeconds: 40
+          periodSeconds: 20
+          timeoutSeconds: 3
+          failureThreshold: 3
       volumes:
         - name: secrets-store
           csi:
@@ -106,6 +129,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
     alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/d83e36ad-c6b5-43da-aefe-844cf88a67de
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
