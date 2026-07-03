@@ -15,17 +15,17 @@ spec:
     spec:
       containers:
       - name: one8pulse-configserver
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/configserver:latest
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:35
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 200m
+            memory: 384Mi
           limits:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 500m
+            memory: 512Mi
         readinessProbe:
           httpGet:
             path: /
