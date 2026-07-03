@@ -14,8 +14,8 @@ spec:
             objectAlias: "DB_HOST"
           - path: "DB_PASSWORD"
             objectAlias: "DB_PASSWORD"
-          - path: "JWT_SECRET"
-            objectAlias: "JWT_SECRET"
+          - path: "JWT_KEY"
+            objectAlias: "JWT_KEY"
           - path: "SMTP_PASSWORD"
             objectAlias: "SMTP_PASSWORD"
           - path: "GEMINI_KEY"
@@ -30,8 +30,8 @@ spec:
       objectName: DB_HOST
     - key: DB_PASSWORD
       objectName: DB_PASSWORD
-    - key: JWT_SECRET
-      objectName: JWT_SECRET
+    - key: JWT_KEY
+      objectName: JWT_KEY
     - key: SMTP_PASSWORD
       objectName: SMTP_PASSWORD
     - key: GEMINI_KEY
