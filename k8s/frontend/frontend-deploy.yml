@@ -8,10 +8,12 @@ spec:
   selector:
     matchLabels:
       app: one8pulse
+      component: frontend
   template:
     metadata:
       labels:
         app: one8pulse
+        component: frontend
     spec:
       containers:
       - name: one8pulse-frontend
@@ -51,6 +53,7 @@ metadata:
 spec:
   selector:
     app: one8pulse
+    component: frontend
   ports:
   - port: 80
     targetPort: 8080
