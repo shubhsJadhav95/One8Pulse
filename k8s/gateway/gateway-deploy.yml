@@ -16,10 +16,13 @@ spec:
     spec:
       containers:
       - name: one8pulse-gateway
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:6
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:9
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        env:
+          - name: SPRING_CONFIG_IMPORT
+            value: "optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888"
         envFrom:
           - secretRef:
               name: one8pulse-secrets

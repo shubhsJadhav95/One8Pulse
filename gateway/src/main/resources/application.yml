@@ -3,9 +3,3 @@ spring:
     name: api-gateway
   config:
     import: optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:80
-
-  jwt:
-    secret:
-      key: nM3GZ9YxE0rXv1R8Pp2Z5cQ4A6v0m9FZkZ0YpZyM3vA=
-    expiration:
-      ms: 86400000

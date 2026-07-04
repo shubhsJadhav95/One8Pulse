@@ -116,8 +116,9 @@ metadata:
 spec:
   selector:
     app: one8pulse
+    component: configserver
   ports:
-  - port: 80
+  - port: 8888
     targetPort: 8888
   type: ClusterIP
 ---
@@ -154,4 +155,4 @@ spec:
           service:
             name: one8pulse-configserver-service
             port:
-              number: 80
+              number: 8888
