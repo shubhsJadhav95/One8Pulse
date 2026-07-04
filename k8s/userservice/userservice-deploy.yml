@@ -56,7 +56,8 @@ metadata:
   namespace: one8pulse
 spec:
   selector:
-    app: one8pulse-userservice
+    app: one8pulse
+    component: userservice
   ports:
   - port: 80
     targetPort: 8080
