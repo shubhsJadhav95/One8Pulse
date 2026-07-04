@@ -30,10 +30,11 @@ gemini:
     key: ${GEMINI_KEY}
 
 management:
-  endpoint:
-    health:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info
+      base-path: /
+  endpoint:
+    health:
+      show-details: always

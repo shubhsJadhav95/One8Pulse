@@ -29,11 +29,12 @@ jwt:
     ms: 86400000
 
 management:
-  endpoint:
-    health:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info
+      base-path: /
+  endpoint:
+    health:
+      show-details: always
 

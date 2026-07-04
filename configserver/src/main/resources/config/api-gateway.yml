@@ -34,3 +34,12 @@ jwt:
   expiration:
     ms: 86400000
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /
+  endpoint:
+    health:
+      show-details: always
