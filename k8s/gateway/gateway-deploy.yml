@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: one8pulse-gateway
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:35
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/gateway:6
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
