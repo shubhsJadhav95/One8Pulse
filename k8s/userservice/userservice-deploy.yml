@@ -14,11 +14,14 @@ spec:
         app: one8pulse
         component: userservice
       containers:
-      - name: one8pulse-gateway
+      - name: one8pulse-userservice
         image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/userservice:38
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        env:
+          - name: SPRING_CONFIG_IMPORT
+            value: "optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888"
         envFrom:
           - secretRef:
               name: one8pulse-secrets
@@ -58,31 +61,3 @@ spec:
   - port: 80
     targetPort: 8080
   type: ClusterIP
----
-# This is the ONLY service that should be internet-facing.
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: one8pulse-userservice-ingress
-  namespace: one8pulse
-  annotations:
-    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/d83e36ad-c6b5-43da-aefe-844cf88a67de
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: '443'
-    kubernetes.io/ingress.class: alb
-spec:
-  rules:
-  - host: userservice.one8pulse.devcloudzone.store
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: one8pulse-user-service
-            port:
-              number: 80
