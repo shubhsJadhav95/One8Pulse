@@ -6,7 +6,7 @@ spring:
       uri: ${MONGO_URL}
       database: fitnessactivity
   rabbitmq:
-    host: localhost
+    host: one8pulse-rabbitmq.one8pulse.svc.cluster.local
     port: 5672
     username: guest
     password: guest

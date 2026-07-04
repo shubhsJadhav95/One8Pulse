@@ -6,22 +6,22 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8081
+          uri: http://one8pulse-user-service.one8pulse.svc.cluster.local:80
           predicates:
             - Path=/api/users/**
 
         - id: activity-service
-          uri: http://localhost:8082
+          uri: http://one8pulse-activity-service.one8pulse.svc.cluster.local:80
           predicates:
             - Path=/api/activities/**
 
         - id: ai-service
-          uri: http://localhost:8083
+          uri: http://one8pulse-ai-service.one8pulse.svc.cluster.local:80
           predicates:
             - Path=/api/recommendations/**
 
         - id: sos-service
-          uri: http://localhost:8089
+          uri: http://one8pulse-sos-service.one8pulse.svc.cluster.local:80
           predicates:
             - Path=/api/sos/**
 

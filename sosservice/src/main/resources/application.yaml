@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: sosservice
+  config:
+    import: optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888
 
   datasource:
     url: jdbc:postgresql://localhost:5432/fitness_sos_db
