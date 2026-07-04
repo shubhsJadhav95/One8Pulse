@@ -18,7 +18,7 @@ spec:
         image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/userservice:12
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         env:
           - name: SPRING_CONFIG_IMPORT
             value: "optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888"
@@ -60,5 +60,5 @@ spec:
     component: userservice
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 8081
   type: ClusterIP
