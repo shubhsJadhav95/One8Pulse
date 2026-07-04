@@ -38,7 +38,10 @@ public class SecurityConfig {
                                 "/api/users/send-otp",
                                 "/api/users/send-reset-otp",
                                 "/api/users/reset-password",
-                                "/api/users/*/validate"
+                                "/api/users/*/validate",
+                                "/actuator/health",
+                                "/actuator/health/readiness",
+                                "/actuator/health/liveness"
                         ).permitAll()
 
                         .anyRequest().authenticated()
