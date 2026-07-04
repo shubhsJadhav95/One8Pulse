@@ -41,7 +41,8 @@ metadata:
   namespace: one8pulse
 spec:
   selector:
-    app: one8pulse-gateway
+    app: one8pulse
+    component: gateway
   ports:
   - port: 80
     targetPort: 8080
