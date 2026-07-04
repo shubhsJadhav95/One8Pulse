@@ -59,7 +59,7 @@ spec:
       
       containers:
       - name: one8pulse-configserver
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/configserver:latest
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/configserver:8
         imagePullPolicy: Always
         ports:
         - containerPort: 8888
