@@ -15,7 +15,7 @@ spec:
         component: userservice
       containers:
       - name: one8pulse-userservice
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/userservice:38
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/userservice:12
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
