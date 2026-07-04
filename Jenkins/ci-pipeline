@@ -58,6 +58,7 @@ pipeline {
             }
         }
         
+        
             stage('6.Trivy Filesystem Scan') {
             steps {
                  dir("${params.SERVICE_DIR}"){
