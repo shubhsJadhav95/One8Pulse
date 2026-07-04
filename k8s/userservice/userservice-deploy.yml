@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one8pulse-userservice
+  namespace: one8pulse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: one8pulse
+  template:
+    metadata:
+      labels:
+        app: one8pulse
+        component: userservice
+      containers:
+      - name: one8pulse-gateway
+        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/userservice:38
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: one8pulse-secrets
+        resources:
+          requests:
+            cpu: 200m
+            memory: 384Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 3
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one8pulse-user-service
+  namespace: one8pulse
+spec:
+  selector:
+    app: one8pulse-userservice
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP
+---
+# This is the ONLY service that should be internet-facing.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: one8pulse-userservice-ingress
+  namespace: one8pulse
+  annotations:
+    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/d83e36ad-c6b5-43da-aefe-844cf88a67de
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+  - host: userservice.one8pulse.devcloudzone.store
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: one8pulse-user-service
+            port:
+              number: 80
