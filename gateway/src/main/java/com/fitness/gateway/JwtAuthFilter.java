@@ -32,6 +32,7 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         System.out.println("REQUEST PATH: " + path);
         System.out.println("AUTH HEADER: " +
                 exchange.getRequest().getHeaders().getFirst("Authorization"));
+        System.out.println("REQUEST METHOD: " + exchange.getRequest().getMethod());
 
         // PUBLIC ROUTES
         if (path.startsWith("/api/users/login") ||
@@ -41,7 +42,8 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
                 path.startsWith("/api/sos/trigger") ||
                 path.startsWith("/api/sos/nearby-hospitals") ||
                 path.startsWith("/api/sos/emergency-contact") ||
-                path.startsWith("/actuator")) {
+                path.startsWith("/actuator") ||
+                exchange.getRequest().getMethod().name().equals("OPTIONS")) {
             return chain.filter(exchange);
         }
 
