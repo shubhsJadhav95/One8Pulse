@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: one8pulse-userservice
-          image: public.ecr.aws/t3q3l4n7/backend/userservice:4
+          image: public.ecr.aws/t3q3l4n7/backend/userservice:6
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
