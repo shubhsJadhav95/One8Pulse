@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: one8pulse-aiservice
-        image: public.ecr.aws/t3q3l4n7/backend/aiservice:9
+        image: public.ecr.aws/t3q3l4n7/backend/aiservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8083
