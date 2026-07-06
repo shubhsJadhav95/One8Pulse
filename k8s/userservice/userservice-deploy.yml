@@ -8,6 +8,7 @@ spec:
   selector:
     matchLabels:
       app: one8pulse
+      component: userservice
 
   template:
     metadata:

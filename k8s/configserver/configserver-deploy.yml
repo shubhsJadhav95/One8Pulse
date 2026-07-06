@@ -49,6 +49,7 @@ spec:
   selector:
     matchLabels:
       app: one8pulse
+      component: configserver
   template:
     metadata:
       labels:

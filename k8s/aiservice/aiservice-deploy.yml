@@ -8,6 +8,7 @@ spec:
   selector:
     matchLabels:
       app: one8pulse
+      component: aiservice
   template:
     metadata:
       labels:
@@ -29,10 +30,10 @@ spec:
         resources:
           requests:
             cpu: 200m
-            memory: 384Mi
+            memory: 512Mi    # Increase from 384Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1000m       # Increase from 500m
+            memory: 1Gi      # Increase from 512Mi
         readinessProbe:
           httpGet:
             path: /actuator/health
