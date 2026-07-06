@@ -91,7 +91,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: one8pulse-gateway-ingress
+  name: one8pulse-rabbitmq-ingress
   namespace: one8pulse
   annotations:
     alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
