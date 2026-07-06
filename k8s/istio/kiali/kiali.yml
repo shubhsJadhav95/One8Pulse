@@ -25,34 +25,21 @@ spec:
               number: 80
 ---
 apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
-  name: kiali-gateway
-  namespace: istio-system
-spec:
-  selector:
-    istio: ingressgateway
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - kiali.one8pulse.devcloudzone.store
----
-apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: kiali
   namespace: istio-system
+
 spec:
   hosts:
-  - kiali.one8pulse.devcloudzone.store
+    - kiali.one8pulse.devcloudzone.store
+
   gateways:
-  - kiali-gateway
+    - public-gateway
+
   http:
   - route:
-    - destination:
-        host: kiali
-        port:
-          number: 20001
+      - destination:
+          host: kiali
+          port:
+            number: 20001
