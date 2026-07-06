@@ -18,6 +18,7 @@ metadata:
   namespace: one8pulse
   labels:
     app: one8pulse-rabbitmq
+    component: rabbitmq
 spec:
   replicas: 1
   strategy:
@@ -75,7 +76,8 @@ metadata:
   namespace: one8pulse
 spec:
   selector:
-    app: one8pulse-rabbitmq
+    app: one8pulse
+    component: rabbitmq
   ports:
     - name: amqp
       port: 5672
@@ -84,3 +86,31 @@ spec:
       port: 15672
       targetPort: 15672
   type: ClusterIP
+---
+# This is the ONLY service that should be internet-facing.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: one8pulse-gateway-ingress
+  namespace: one8pulse
+  annotations:
+    alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/d83e36ad-c6b5-43da-aefe-844cf88a67de
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+  - host: rabbitmq.one8pulse.devcloudzone.store
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: one8pulse-rabbitmq
+            port:
+              number: 80
