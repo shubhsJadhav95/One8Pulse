@@ -109,7 +109,7 @@ mvn spring-boot:run
 cd gateway
 mvn spring-boot:run
 ```
-- Access at: http://localhost:8080
+- Access at: https://api.one8pulse.devcloudzone.store
 
 ### Frontend Setup
 
@@ -145,7 +145,7 @@ npm run dev
   - `spring.rabbitmq.password`: RabbitMQ password (default: guest)
 
 #### Frontend
-- **API Base URL**: http://localhost:8080 (Gateway URL)
+- **API Base URL**: https://api.one8pulse.devcloudzone.store (Gateway URL)
 - **JWT Token**: Stored in localStorage after login
 
 ### Configuration Files
