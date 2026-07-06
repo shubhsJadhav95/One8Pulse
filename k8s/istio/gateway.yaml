@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: one8pulse-gateway
+  namespace: one8pulse
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "api.one8pulse.devcloudzone.store"
+    - "one8pulse.devcloudzone.store"
+    - "*"

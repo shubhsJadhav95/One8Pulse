@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-mongodb
+  namespace: one8pulse
+spec:
+  hosts:
+  - "*.mongodb.net"
+  location: MESH_EXTERNAL
+  ports:
+  - number: 27017
+    name: mongodb
+    protocol: TCP
+  resolution: DNS
