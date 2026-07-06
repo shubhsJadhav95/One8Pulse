@@ -17,19 +17,19 @@ metadata:
   name: one8pulse-rabbitmq
   namespace: one8pulse
   labels:
-    app: one8pulse-rabbitmq
-    component: rabbitmq
+    app: one8pulse
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: one8pulse-rabbitmq
+      app: one8pulse
   template:
     metadata:
       labels:
-        app: one8pulse-rabbitmq
+        app: one8pulse
+        component: rabbitmq
     spec:
       containers:
         - name: rabbitmq
