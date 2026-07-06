@@ -113,4 +113,4 @@ spec:
           service:
             name: one8pulse-rabbitmq
             port:
-              number: 80
+              number: 15672
