@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one8pulse-activityservice
+  namespace: one8pulse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: one8pulse
+
+  template:
+    metadata:
+      labels:
+        app: one8pulse
+        component: activityservice
+    spec:
+      containers:
+        - name: one8pulse-userservice
+          image: public.ecr.aws/t3q3l4n7/backend/activityservice:4
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888"
+          envFrom:
+            - secretRef:
+                name: one8pulse-secrets
+          resources:
+            requests:
+              cpu: 200m
+              memory: 384Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8082
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8082
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one8pulse-activity-service
+  namespace: one8pulse
+spec:
+  selector:
+    app: one8pulse
+    component: activityservice
+  ports:
+  - port: 80
+    targetPort: 8082
+  type: ClusterIP

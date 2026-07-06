@@ -15,7 +15,7 @@ public class WebClientConfig {
     @Bean
     public WebClient userServiceWebClient(WebClient.Builder webClientBuilder) {
         return webClientBuilder
-                .baseUrl("http://localhost:8081")
+                .baseUrl("http://one8pulse-user-service.one8pulse.svc.cluster.local:80")
                 .build();
     }
 }

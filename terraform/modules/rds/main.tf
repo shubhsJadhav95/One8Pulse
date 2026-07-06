@@ -12,7 +12,15 @@ resource "aws_security_group" "rds_sg" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  ingress {
+    description     = "Postgres from EKS Node SG"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [var.eks_node_sg_id]
   }
   
 
@@ -23,9 +31,9 @@ resource "aws_security_group" "rds_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "rds-postgres-sg"
-  }
+  tags = merge(var.tags, {
+    Name = "${var.project}-${var.env}-rds-postgres-sg"
+  })
 }
 
 # RDS SUBNET
@@ -34,9 +42,9 @@ resource "aws_db_subnet_group" "default" {
   name       = "rds-postgres-subnet-group"
   subnet_ids = var.private_subnet_ids
 
-  tags = {
-    Name = "rds-postgres-subnet-group"
-  }
+  tags = merge(var.tags, {
+    Name = "${var.project}-${var.env}-rds-postgres-subnet-group"
+  })
 }
 
 resource "aws_db_instance" "postgres" {
@@ -53,4 +61,8 @@ resource "aws_db_instance" "postgres" {
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   publicly_accessible     = var.publicly_accessible
   skip_final_snapshot     = var.skip_final_snapshot
+
+  tags = merge(var.tags, {
+    Name = "${var.project}-${var.env}-rds-postgres"
+  })
 }

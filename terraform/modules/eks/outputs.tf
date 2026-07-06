@@ -24,6 +24,11 @@ output "oidc_provider_arn" {
   value       = aws_iam_openid_connect_provider.eks.arn
 }
 
+output "oidc_provider_url" {
+  description = "URL of the OIDC provider (used for IRSA)"
+  value       = aws_iam_openid_connect_provider.eks.url
+}
+
 output "node_group_name" {
   description = "Name of the EKS managed node group"
   value       = aws_eks_node_group.this.node_group_name
@@ -32,4 +37,9 @@ output "node_group_name" {
 output "kubeconfig_command" {
   description = "Run this on jump/jenkins server to configure kubectl"
   value       = "aws eks update-kubeconfig --region us-east-1 --name ${aws_eks_cluster.this.name}"
+}
+
+output "node_security_group_id" {
+  description = "Security group ID attached to the EKS nodes"
+  value       = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
 }

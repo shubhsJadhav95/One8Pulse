@@ -69,3 +69,19 @@ variable "allocated_storage" {
   description = "Allocated storage in GB"
   default     = 20
 }
+
+variable "vpc_cidr" {
+  type        = string
+  description = "CIDR block of the VPC"
+}
+
+variable "eks_node_sg_id" {
+  type        = string
+  description = "Security group ID of the EKS nodes"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Common tags"
+  default     = {}
+}
