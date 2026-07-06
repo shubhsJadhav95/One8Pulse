@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: one8pulse-aiservice
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/backend/aiservice:latest
+        image: public.ecr.aws/t3q3l4n7/backend/aiservice:9
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 8083
         env:
           - name: SPRING_CONFIG_IMPORT
             value: "optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888"
@@ -36,7 +36,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /actuator/health
-            port: 8080
+            port: 8083
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 3
@@ -44,7 +44,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /actuator/health
-            port: 8080
+            port: 8083
           initialDelaySeconds: 15
           periodSeconds: 20
           timeoutSeconds: 3
@@ -61,5 +61,5 @@ spec:
     component: aiservice
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 8083
   type: ClusterIP

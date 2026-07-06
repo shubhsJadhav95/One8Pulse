@@ -31,8 +31,5 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendationService.getActivityRecommendation(activityId));
     }
 
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("OK");
-    }
+
 }
