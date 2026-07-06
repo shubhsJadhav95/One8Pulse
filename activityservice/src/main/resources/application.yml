@@ -3,3 +3,10 @@ spring:
     name: activity-service
   config:
     import: optional:configserver:http://one8pulse-configserver-service.one8pulse.svc.cluster.local:8888
+  cloud:
+    discovery:
+      enabled: false
+
+# Fallback if config server is not reachable
+user-service:
+  url: http://one8pulse-user-service.one8pulse.svc.cluster.local:80
