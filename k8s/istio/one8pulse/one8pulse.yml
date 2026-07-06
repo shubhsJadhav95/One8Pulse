@@ -1,0 +1,67 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: one8pulse-gateway
+  namespace: one8pulse
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "api.one8pulse.devcloudzone.store"
+    - "one8pulse.devcloudzone.store"
+    - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: one8pulse-gateway-destinationrule
+  namespace: one8pulse
+spec:
+  host: one8pulse-gateway
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        maxRequestsPerConnection: 10
+    outlierDetection:
+      consecutiveErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: one8pulse-virtualservice
+  namespace: one8pulse
+spec:
+  hosts:
+  - "api.one8pulse.devcloudzone.store"
+  - "one8pulse.devcloudzone.store"
+  gateways:
+  - one8pulse-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/
+    route:
+    - destination:
+        host: one8pulse-gateway
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: one8pulse-gateway
+        port:
+          number: 8080
