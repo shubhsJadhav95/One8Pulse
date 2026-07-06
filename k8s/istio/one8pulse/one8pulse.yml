@@ -6,27 +6,25 @@ metadata:
 spec:
   selector:
     istio: ingressgateway
-
   servers:
   - port:
       number: 80
       name: http
       protocol: HTTP
-
     hosts:
-      - api.one8pulse.devcloudzone.store
-      - one8pulse.devcloudzone.store
-      - kiali.one8pulse.devcloudzone.store
-      - prometheus.one8pulse.devcloudzone.store
-      -  grafana.one8pulse.devcloudzone.store 
+    - api.one8pulse.devcloudzone.store
+    - one8pulse.devcloudzone.store
+    - kiali.one8pulse.devcloudzone.store
+    - prometheus.one8pulse.devcloudzone.store
+    - grafana.one8pulse.devcloudzone.store
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: one8pulse-gateway-destinationrule
+  name: one8pulse-gateway-dr
   namespace: one8pulse
 spec:
-  host: one8pulse-gateway
+  host: one8pulse-gateway-service.one8pulse.svc.cluster.local
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
@@ -37,35 +35,38 @@ spec:
         http1MaxPendingRequests: 50
         maxRequestsPerConnection: 10
     outlierDetection:
-      consecutiveErrors: 3
+      consecutive5xxErrors: 3
       interval: 30s
       baseEjectionTime: 30s
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: one8pulse-virtualservice
+  name: one8pulse
   namespace: one8pulse
 spec:
   hosts:
-  - "api.one8pulse.devcloudzone.store"
-  - "one8pulse.devcloudzone.store"
+  - api.one8pulse.devcloudzone.store
+  - one8pulse.devcloudzone.store
+
   gateways:
-  - one8pulse-gateway
+  - istio-system/public-gateway
+
   http:
   - match:
     - uri:
         prefix: /api/
     route:
     - destination:
-        host: one8pulse-gateway
+        host: one8pulse-gateway-service.one8pulse.svc.cluster.local
         port:
           number: 8080
+
   - match:
     - uri:
         prefix: /
     route:
     - destination:
-        host: one8pulse-gateway
+        host: one8pulse-gateway-service.one8pulse.svc.cluster.local
         port:
           number: 8080
