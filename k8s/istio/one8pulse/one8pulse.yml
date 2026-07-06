@@ -1,20 +1,23 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: one8pulse-gateway
-  namespace: one8pulse
+  name: public-gateway
+  namespace: istio-system
 spec:
   selector:
     istio: ingressgateway
+
   servers:
   - port:
       number: 80
       name: http
       protocol: HTTP
+
     hosts:
-    - "api.one8pulse.devcloudzone.store"
-    - "one8pulse.devcloudzone.store"
-    - "*"
+      - api.one8pulse.devcloudzone.store
+      - one8pulse.devcloudzone.store
+      - kiali.one8pulse.devcloudzone.store
+      - prometheus.one8pulse.devcloudzone.store
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
