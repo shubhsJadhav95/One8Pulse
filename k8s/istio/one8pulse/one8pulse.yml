@@ -18,6 +18,7 @@ spec:
       - one8pulse.devcloudzone.store
       - kiali.one8pulse.devcloudzone.store
       - prometheus.one8pulse.devcloudzone.store
+      -  grafana.one8pulse.devcloudzone.store 
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
