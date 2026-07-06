@@ -70,7 +70,7 @@ variable "allowed_ssh_cidrs" {
 # ── EKS ──
 variable "kubernetes_version" {
   type    = string
-  default = "1.30"
+  default = "1.35"
 }
 
 variable "node_instance_type" {

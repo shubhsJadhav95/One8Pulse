@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: istio-system
+  labels:
+    app: kiali
+data:
+  config.yaml: |
+    server:
+      port: 20001
+      web_root: /kiali
+    external_services:
+      prometheus:
+        url: http://prometheus.istio-system.svc:9090
+      grafana:
+        url: http://grafana.istio-system.svc:3000
+      tracing:
+        url: http://jaeger-query.istio-system.svc:16686
+    auth:
+      strategy: token
+    istio_component_namespaces:
+      istio_system_namespace: istio-system
+    metrics:
+      enabled: true
+      namespace: istio-system
+    dashboards:
+      enabled: true
