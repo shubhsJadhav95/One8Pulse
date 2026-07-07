@@ -70,12 +70,12 @@ variable "allowed_ssh_cidrs" {
 # ── EKS ──
 variable "kubernetes_version" {
   type    = string
-  default = "1.35"
+  default = "1.32"
 }
 
 variable "node_instance_type" {
   type    = string
-  default = "c7i-flex.large"
+  default = "m7i-flex.large"
 }
 
 variable "node_desired_size" {

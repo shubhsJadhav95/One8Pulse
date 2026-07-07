@@ -34,24 +34,4 @@ provider "aws" {
   }
 }
 
-# Kubernetes and Helm providers are configured in alb-controller-install.tf
-# Kubernetes and Helm providers are configured using EKS module outputs
-# and the AWS auth data source to avoid manual kubeconfig updates.
 
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
-provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_ca_certificate)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_ca_certificate)
-    token                  = data.aws_eks_cluster_auth.cluster.token
-  }
-}

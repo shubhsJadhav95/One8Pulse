@@ -69,21 +69,6 @@ module "eks" {
   depends_on = [module.vpc]
 }
 
-# ── 5. AWS Load Balancer Controller (IAM Resources Only) ──
-module "aws_lb_controller" {
-  source = "../../modules/aws-lb-controller"
-
-  project           = var.project
-  env               = var.env
-  cluster_name      = module.eks.cluster_name
-  oidc_provider_arn = module.eks.oidc_provider_arn
-  oidc_provider_url = module.eks.oidc_provider_url
-  vpc_id            = module.vpc.vpc_id
-  region            = var.aws_region
-  tags              = local.common_tags
-
-  depends_on = [module.eks]
-}
 
 # ── 6. RDS ──
 module "rds" {
