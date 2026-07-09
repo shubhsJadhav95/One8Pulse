@@ -27,3 +27,6 @@ Thumbs.db
 *.pem
 id_rsa
 id_rsa.pub
+
+!modules/secrets-csi/
+!modules/secrets-csi/**
