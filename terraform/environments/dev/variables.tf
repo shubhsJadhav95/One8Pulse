@@ -64,7 +64,7 @@ variable "public_key_path" {
 variable "allowed_ssh_cidrs" {
   description = "Your office/home IP to allow SSH to jump server"
   type        = list(string)
-  default = [ "103.167.122.21/32" ]
+  default = [ "157.119.45.161/32" ]
 }
 
 # ── EKS ──
