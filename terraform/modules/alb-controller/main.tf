@@ -11,25 +11,25 @@ resource "aws_iam_policy" "alb_controller" {
 # IAM role trusted by OIDC provider (IRSA)
 data "aws_iam_policy_document" "alb_trust" {
   statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
 
     principals {
       type        = "Federated"
       identifiers = [var.oidc_provider_arn]
     }
 
-    condition {
-      test     = "StringEquals"
-      variable = ":sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
-    }
+            condition {
+            test     = "StringEquals"
+            variable = "${local.oidc_provider}:sub"
+            values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+            }
 
-    condition {
-      test     = "StringEquals"
-      variable = ":aud"
-      values   = ["sts.amazonaws.com"]
-    }
+            condition {
+            test     = "StringEquals"
+            variable = "${local.oidc_provider}:aud"
+            values   = ["sts.amazonaws.com"]
+            }
   }
 }
 
@@ -93,4 +93,7 @@ resource "helm_release" "alb_controller" {
     kubernetes_service_account_v1.alb_controller,
     aws_iam_role_policy_attachment.alb_controller
   ]
+}
+locals {
+  oidc_provider = replace(var.oidc_provider_url, "https://", "")
 }

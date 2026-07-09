@@ -39,7 +39,7 @@ resource "aws_security_group" "rds_sg" {
 # RDS SUBNET
 
 resource "aws_db_subnet_group" "default" {
-  name       = "rds-postgres-subnet-group"
+  name       = "rds-postgres-subnet-group-dev"
   subnet_ids = var.private_subnet_ids
 
   tags = merge(var.tags, {
