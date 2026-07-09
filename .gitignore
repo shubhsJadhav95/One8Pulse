@@ -21,3 +21,8 @@ terraform.tfplan
 crash.log
 crash.*.log
 .terraform.lock.hcl
+
+*secret*
+
+!modules/secrets-csi/
+!modules/secrets-csi/**
