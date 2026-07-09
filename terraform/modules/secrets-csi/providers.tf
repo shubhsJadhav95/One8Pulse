@@ -1,4 +1,4 @@
-# ── Provider Configuration ──
+# ── Provider Requirements ──
 terraform {
   required_providers {
     aws = {
@@ -23,27 +23,3 @@ terraform {
     }
   }
 }
-
-# ── AWS Provider ──
-provider "aws" {
-  region = var.aws_region
-}
-
-# ── Kubernetes Provider ──
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
-
-# ── Helm Provider ──
-provider "helm" {
-  kubernetes {
-    config_path = "~/.kube/config"
-  }
-}
-
-# ── Kubectl Provider ──
-provider "kubectl" {
-  config_path = "~/.kube/config"
-}
-
-#ADDED
