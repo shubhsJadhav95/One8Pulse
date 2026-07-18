@@ -131,11 +131,6 @@ variable "service_account_name" {
   default     = "aws-csi-secret-manager"
 }
 
-variable "app_namespace" {
-  description = "Kubernetes namespace the application (and its ServiceAccount) will live in"
-  type        = string
-  default     = "one8pulse"
-}
 
 variable "aws_account_id" {
   description = "AWS account ID that owns the secrets and IAM resources"
