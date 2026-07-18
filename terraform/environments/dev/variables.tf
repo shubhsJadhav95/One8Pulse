@@ -108,3 +108,32 @@ variable "db_password" {
   type      = string
   sensitive = true
 }
+
+variable "oidc_provider_url" {
+  type = string
+}
+
+variable "oidc_provider_arn" {
+  type = string
+}
+
+variable "aws_account_id" {
+  type = string
+}
+
+
+variable "app_namespace" {
+  type = string
+}
+
+variable "service_account_name" {
+  type = string
+}
+
+variable "name_suffix" {
+  type = string
+}
+
+variable "secrets_manager_arn_pattern" {
+  type = string
+}
