@@ -6,16 +6,16 @@ module "alb_controller" {
   oidc_provider_url = module.eks.oidc_provider_url
   vpc_id            = module.vpc.vpc_id
   aws_region        = var.aws_region
+  
 }
 
 module "secrets_csi" {
-  source            = "../../modules/secrets-csi"
+  source = "../../modules/secrets-csi"
+
   cluster_name      = module.eks.cluster_name
   oidc_provider_arn = module.eks.oidc_provider_arn
   oidc_provider_url = module.eks.oidc_provider_url
-  app_namespace     = "one8pulse"
-  service_account_name = "aws-csi-secret-manager"
-  aws_region        = var.aws_region
+  app_namespace     = "neocare"
 }
 
 # ── 1. VPC ──
