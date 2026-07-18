@@ -64,7 +64,7 @@ variable "public_key_path" {
 variable "allowed_ssh_cidrs" {
   description = "Your office/home IP to allow SSH to jump server"
   type        = list(string)
-  default = [ "157.119.45.161/32" ]
+  default = ["45.118.105.241/32" ]
 }
 
 # ── EKS ──
@@ -107,4 +107,33 @@ variable "db_username" {
 variable "db_password" {
   type      = string
   sensitive = true
+}
+
+variable "oidc_provider_url" {
+  type = string
+}
+
+variable "oidc_provider_arn" {
+  type = string
+}
+
+variable "aws_account_id" {
+  type = string
+}
+
+
+variable "app_namespace" {
+  type = string
+}
+
+variable "service_account_name" {
+  type = string
+}
+
+variable "name_suffix" {
+  type = string
+}
+
+variable "secrets_manager_arn_pattern" {
+  type = string
 }
