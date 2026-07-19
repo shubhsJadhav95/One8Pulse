@@ -16,13 +16,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, info, prometheus, metrics   # added: info, prometheus, metrics
   endpoint:
     health:
       probes:
         enabled: true
+      show-details: always   # added: useful for debugging, shows component-level status
   health:
     livenessstate:
       enabled: true
     readinessstate:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}   # added: tags every metric with service=config-server
