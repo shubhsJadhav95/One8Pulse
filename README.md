@@ -4,7 +4,7 @@ A modern, high-end fitness tracking application built with microservices archite
 
 ## 🏗️ Architecture
 
-### Microservices Architecture
+### Microservices Architecture Format
 - **Eureka Server** - Service Discovery (Port: 8761)
 - **Config Server** - Centralized Configuration (Port: 8888)
 - **API Gateway** - Gateway for all external requests (Port: 8080)
