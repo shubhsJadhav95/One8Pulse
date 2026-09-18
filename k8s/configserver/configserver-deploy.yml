@@ -14,7 +14,7 @@ spec:
             objectAlias: "DB_HOST"
           - path: "DB_PASSWORD"
             objectAlias: "DB_PASSWORD"
-          - path: "JWT_SECRET"
+          - path: "JWT_ KEY"
             objectAlias: "JWT_KEY"
           - path: "SMTP_PASSWORD"
             objectAlias: "SMTP_PASSWORD"
