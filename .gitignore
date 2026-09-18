@@ -13,7 +13,6 @@ src/main/resources/config/*.yml
 .terraform/
 *.tfstate
 *.tfstate.*
-*.tfvars
 !example.tfvars
 override.tf
 override.tf.json

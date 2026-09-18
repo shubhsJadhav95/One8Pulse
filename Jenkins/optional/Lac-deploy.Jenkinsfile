@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region (ECR Public is ONLY in us-east-1)')
-        string(name: 'AWS_ACCOUNT_ID', defaultValue: '797111435256', description: 'AWS Account ID')
+        string(name: 'AWS_ACCOUNT_ID', defaultValue: '658548981947', description: 'AWS Account ID')
         string(name: 'CLUSTER_NAME', defaultValue: 'one8pulse-stage-eks', description: 'cluster name')
         string(name: 'VPC_ID', defaultValue: 'vpc-0c2ef465b10ec3ad7', description: 'vpc-id')
         string(name: 'NAMESPACE', defaultValue: 'one8pulse', description: 'create namespace')
@@ -83,7 +83,7 @@ pipeline {
                     set -e
                     curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.14.1/docs/install/iam_policy.json
 
-                    aws iam delete-policy --policy-arn arn:aws:iam::797111435256:policy/AWSLoadBalancerControllerIAMPolicy || true
+                    aws iam delete-policy --policy-arn arn:aws:iam::658548981947:policy/AWSLoadBalancerControllerIAMPolicy || true
 
                     aws iam create-policy \
                         --policy-name AWSLoadBalancerControllerIAMPolicy \
@@ -97,7 +97,7 @@ pipeline {
                         --cluster=${CLUSTER_NAME} \
                         --namespace=kube-system \
                         --name=aws-load-balancer-controller \
-                        --attach-policy-arn=arn:aws:iam::797111435256:policy/AWSLoadBalancerControllerIAMPolicy \
+                        --attach-policy-arn=arn:aws:iam::658548981947:policy/AWSLoadBalancerControllerIAMPolicy \
                         --override-existing-serviceaccounts \
                         --region ${AWS_REGION} \
                         --approve
@@ -154,13 +154,13 @@ pipeline {
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret"
             ],
-            "Resource": "arn:aws:secretsmanager:*:797111435256:secret:*"
+            "Resource": "arn:aws:secretsmanager:*:658548981947:secret:*"
         }
     ]
 }
 EOF
 
-                    aws iam delete-policy --policy-arn arn:aws:iam::797111435256:policy/EksSecretManagerPolicy || true
+                    aws iam delete-policy --policy-arn arn:aws:iam::658548981947:policy/EksSecretManagerPolicy || true
 
                     aws iam create-policy \
                         --policy-name EksSecretManagerPolicy \
@@ -173,7 +173,7 @@ EOF
                         --cluster=${CLUSTER_NAME} \
                         --namespace=${NAMESPACE} \
                         --name=aws-csi-secret-manager \
-                        --attach-policy-arn=arn:aws:iam::797111435256:policy/EksSecretManagerPolicy \
+                        --attach-policy-arn=arn:aws:iam::658548981947:policy/EksSecretManagerPolicy \
                         --override-existing-serviceaccounts \
                         --region ${AWS_REGION} \
                         --approve

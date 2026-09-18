@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: one8pulse-frontend
-        image: 797111435256.dkr.ecr.us-east-1.amazonaws.com/frontend/one8pulse:v2
+        image: 658548981947.dkr.ecr.us-east-1.amazonaws.com/frontend/one8pulse:v2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -67,7 +67,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/group.name: one8pulse-internet-lb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:797111435256:certificate/c4507bca-a2b8-41f7-b149-104db65aecc1
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:658548981947:certificate/c4507bca-a2b8-41f7-b149-104db65aecc1
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'

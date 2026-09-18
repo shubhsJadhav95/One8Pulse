@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region (ECR Public is ONLY in us-east-1)')
-        string(name: 'AWS_ACCOUNT_ID', defaultValue: '797111435256', description: 'AWS Account ID')
+        string(name: 'AWS_ACCOUNT_ID', defaultValue: '658548981947', description: 'AWS Account ID')
         string(name: 'ECR_PUBLIC_ALIAS', defaultValue: 't3q3l4n7', description: 'ECR Public registry alias (from aws ecr-public create-repository)')
         string(name: 'ECR_REPO_NAME', defaultValue: 'backend/configserver', description: 'ECR Repository Name')
         string(name: 'VERSION', defaultValue: 'latest', description: 'Docker Image Version')

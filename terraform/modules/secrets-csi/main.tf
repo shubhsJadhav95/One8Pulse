@@ -69,7 +69,7 @@ resource "aws_iam_policy" "secrets_manager" {
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ]
-        Resource = "arn:aws:secretsmanager:*:797111435256:secret:*"
+        Resource = "arn:aws:secretsmanager:*:658548981947:secret:*"
       }
     ]
   })
