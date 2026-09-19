@@ -19,3 +19,5 @@ name_suffix             = "stage-one8pulse"
 
 # Tighten this to your actual secret prefix for least privilege, e.g. "stage/*"
 secrets_manager_arn_pattern = "*"
+
+db_password = "09052004"
